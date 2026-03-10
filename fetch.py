@@ -1,5 +1,6 @@
 import os
-from github import Github
+import time
+from github import Github, GithubException
 from dotenv import load_dotenv
 
 
@@ -13,20 +14,37 @@ class GithubFetcher:
 
     def getCommitsOfRepo(self, repoName):
 
-        repo = self.g.get_repo(repoName);
+        try:
 
-        commits = repo.get_commits();
-        commit_data = []
+            repo = self.g.get_repo(repoName);
 
-        for c in commits:
-            commit_data.append({
-                "sha": c.sha,
-                "author": c.commit.author.name,
-                "date": c.commit.author.date,
-                "message": c.commit.message,
-                "stats_additions": c.stats.additions,
-                "stats_deletions": c.stats.deletions
-            })
-        return commit_data
+            commits = repo.get_commits();
+            commit_data = []
+
+            for c in commits:
+                commit_data.append({
+                    "sha": c.sha,
+                    "author": c.commit.author.name,
+                    "date": c.commit.author.date,
+                    "message": c.commit.message,
+                    "stats_additions": c.stats.additions,
+                    "stats_deletions": c.stats.deletions
+                })
+            return commit_data
+        except GithubException as e:
+            print("Error fetching data: ", e)
+            return []
+
+
+    def checkRateLimit(self):
+        limits = self.g.get_rate_limit();
+        remainingTime = limits.core.remainingTime;
+        resetTime = limits.core.resetTime;
+        print(f"API Status: {remainingTime} requests left.")
+
+        if remainingTime < 10:
+            sleepTime = (resetTime - time.time()) + 5;
+            print(f"Low Rate Limit: Sleeping for {sleepTime}")
+            time.sleep(max(0,sleepTime))
 
     
