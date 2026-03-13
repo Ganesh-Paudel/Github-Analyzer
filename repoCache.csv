@@ -1,0 +1,5 @@
+sha,author,date,message,additions,deletions
+9eafac5998e09ef896a28d95536e37435b705704,Ganesh-Paudel,2026-03-03 23:07:26+00:00,Added comments and removed redundancy in code and fixed warnings.,73,23
+9b1de0c0ef865a122df56e20921250e6c00d1d4a,Ganesh-Paudel,2026-03-03 22:52:56+00:00,"Distributed code to different files for different functionalities. Also, added the recognizition of select and insert command and moved exit into meta commands.",171,26
+82637dd8092995ad487042491e26f31bf5df9a61,Ganesh-Paudel,2026-03-03 22:07:45+00:00,"Added the loop in main, runs and reads the line, till user enters exit or quit.",31,1
+8e6ca7dc7d5990038c2dedd74c2b62da5301a6af,Paudel,2026-03-03 21:41:47+00:00,"Added Initial Commit and files,",107,0

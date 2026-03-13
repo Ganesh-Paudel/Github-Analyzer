@@ -3,18 +3,26 @@ import pandas as pd
 class RepoAnalyzer:
     @staticmethod
     def calculate_activity_score(df):
-       
-        if df.empty: return 0
+
+        if df.empty:
+            return
+
+        commitReward = 10
+        codeChangeReward = 5
+        mulDayReward = 2 
         
-        daysActive = (df['date'].max() - df['date'].min()).days or 1
-        commitFrequency = len(df) / daysActive
-        avgImpact = df['stats_additions'].mean()
-        
-        score = (commitFrequency * 10) + (avgImpact * 0.1)
-        return round(score, 2)
+        totalCommits = len(df)
+
+        totalLinesChanged = df['additions'].sum() + df['deletions'].sum()
+        averageImpactPerCommit = totalLinesChanged / totalCommits
+
+        df['date'] = pd.to_datetime(df['date'])
+        uniqueDays = df['date'].dt.date.nunique()
+
+        score = (totalCommits * commitReward) + (averageImpactPerCommit * codeChangeReward) + (uniqueDays * mulDayReward)
+        return score;
 
     @staticmethod
     def get_productivity_peak(df):
-        """Finds the most active hour of the day."""
         df['hour'] = pd.to_datetime(df['date']).dt.hour
         return df['hour'].mode()[0]

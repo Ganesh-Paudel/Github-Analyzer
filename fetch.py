@@ -12,13 +12,16 @@ class GithubFetcher:
         self.g = Github(os.getenv("GITHUB_PTOKEN"))
 
 
-    def getCommitsOfRepo(self, repoName):
+    def getCommitsOfRepo(self, repoName, since = None):
 
         try:
 
             repo = self.g.get_repo(repoName);
 
-            commits = repo.get_commits();
+            if since:
+                commits = repo.get_commits(since = since)
+            else:
+                commits = repo.get_commits();
             commit_data = []
 
             for c in commits:
@@ -27,8 +30,8 @@ class GithubFetcher:
                     "author": c.commit.author.name,
                     "date": c.commit.author.date,
                     "message": c.commit.message,
-                    "stats_additions": c.stats.additions,
-                    "stats_deletions": c.stats.deletions
+                    "additions": c.stats.additions,
+                    "deletions": c.stats.deletions
                 })
             return commit_data
         except GithubException as e:
